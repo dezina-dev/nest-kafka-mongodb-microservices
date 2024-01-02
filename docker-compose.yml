@@ -1,0 +1,19 @@
+version: '3'
+services:
+  microservice1:
+    build:
+      context: ./src/microservice1
+    ports:
+      - "4001:4001"
+
+  microservice2:
+    build:
+      context: ./src/microservice2
+    ports:
+      - "4002:4002"
+
+  kafka:
+    build:
+      context: ./src/kafka
+    ports:
+      - "4003:4003"

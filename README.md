@@ -1,31 +1,91 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Microservices with Kafka in NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This NestJS application consists of two microservices (`Microservice1` and `Microservice2`) interacting with each other through Kafka. Each microservice manages its own data and communicates with the other microservice via Kafka messages.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Microservice1
 
-## Description
+### Overview
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Service Name:** `Microservice1`
+- **Data Model:** Manages `Product` entities.
 
+### Service Structure
+
+- **Module:** `Microservice1Module`
+- **Controller:** `Microservice1Controller`
+- **Service:** `Microservice1Service`
+- **Model:** `Product`
+
+### Functionality
+
+- `getAllProducts`: Retrieve all products from the database.
+- `createProduct`: Create a new product and publish a Kafka message.
+
+## Microservice2
+
+### Overview
+
+- **Service Name:** `Microservice2`
+- **Data Model:** Manages `Order` entities.
+
+### Service Structure
+
+- **Module:** `Microservice2Module`
+- **Controller:** `Microservice2Controller`
+- **Service:** `Microservice2Service`
+- **Model:** `Order`
+
+### Functionality
+
+- `getAllOrders`: Retrieve all orders from the database.
+- `createOrder`: Create a new order and publish a Kafka message.
+
+## Kafka Service
+
+### Overview
+
+- **Service Name:** `KafkaService`
+- **Description:** Manages Kafka connections, producers, and consumers for communication between microservices.
+
+### Service Structure
+
+- **Service:** `KafkaService`
+
+### Functionality
+
+- **Connect and Disconnect:** Establish and terminate connections to Kafka.
+- **Send Messages:** Send messages to specific Kafka topics for each microservice.
+- **Consume Messages:** Receive and process messages from Kafka topics for each microservice.
+- **Why kafka used:** Kafka is used as a message broker to facilitate communication and data synchronization between the microservices,     specifically microservice1 and microservice2. Kafka provides a distributed and fault-tolerant messaging system that allows decoupling of different services by enabling asynchronous communication. Kafka serves as a central communication hub for your microservices, enabling them to communicate asynchronously through events. This helps in building a scalable, resilient, and loosely coupled microservices architecture.
+
+## Usage
+
+### Docker
+
+- **Why docker used:** The application can be run using Docker for ease of deployment & primarily to provide containerization for your microservices.
+
+1. Install Docker on your machine if not already installed.
+
+2. Build the Docker image:
+
+   ```bash
+   Go in each directory where there is Dockerfile & build docker image
+      cd microservice1
+      docker build -t microservice1-image .
+   ```
+3. Run the Docker container
+
+  ```bash
+  docker run -p 4001:4001 my-nestjs-app
+  ```
+4. docker-compose.yml
+  ```bash
+    - You use the docker-compose up command to start all the services defined in the file docker-compose.yml.
+    - Instead of running individual docker build and docker run commands for each service, you define all the configurations in a docker-compose.yml file and then use a single docker-compose command to start and manage the entire application.
+    - Build Docker images: docker-compose build
+    - Run Docker Compose: docker-compose up
+  ```
+  
 ## Installation
 
 ```bash
@@ -44,29 +104,6 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
